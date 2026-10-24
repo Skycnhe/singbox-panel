@@ -13,10 +13,13 @@ bash <(curl -Ls https://raw.githubusercontent.com/Skycnhe/singbox-panel/Hk001/in
 ### 卸载
 
 ```bash
-systemctl disable --now singbox-panel
-rm -f /usr/local/bin/singbox-panel /etc/systemd/system/singbox-panel.service
-rm -rf /usr/local/singbox-panel
-systemctl daemon-reload
+bash <(curl -Ls https://raw.githubusercontent.com/Skycnhe/singbox-panel/Hk001/uninstall.sh)
+```
+
+默认删除服务、二进制与整个 `/usr/local/singbox-panel`（含面板数据与 sing-box 配置）。只删程序、保留数据可用：
+
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/Skycnhe/singbox-panel/Hk001/uninstall.sh) --keep-data
 ```
 
 ## 功能清单
