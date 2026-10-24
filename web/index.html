@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>sing-box 面板</title>
+<link rel="stylesheet" href="/style.css">
+<script src="/qrcode.js"></script>
+</head>
+<body>
+
+<div id="loginView" class="center">
+  <div class="card login-box">
+    <h2>sing-box 面板登录</h2>
+    <p class="note">默认账号 admin / admin，首次登录需改密</p>
+    <label>用户名</label><input id="loginUser" value="admin">
+    <label>密码</label><input id="loginPass" type="password" value="admin" onkeydown="if(event.key==='Enter')doLogin()">
+    <div style="margin-top:14px"><button onclick="doLogin()" style="width:100%">登录</button></div>
+    <div id="loginErr" class="err"></div>
+  </div>
+</div>
+
+<div id="appView" class="hidden">
+  <div class="topbar">
+    <h1>sing-box 面板</h1>
+    <nav>
+      <button id="nav-dashboard" class="active" onclick="showTab('dashboard')">仪表盘</button>
+      <button id="nav-inbounds" onclick="showTab('inbounds')">入站管理</button>
+      <button id="nav-settings" onclick="showTab('settings')">设置</button>
+      <button id="nav-logs" onclick="showTab('logs')">内核日志</button>
+    </nav>
+    <div class="spacer"></div>
+    <span id="coreBadge" class="badge off">核心未运行</span>
+    <button class="secondary small" onclick="doLogout()">退出</button>
+  </div>
+
+  <div class="main">
+    <div id="tab-dashboard">
+      <div class="grid">
+        <div class="card stat"><span>sing-box 状态</span><b id="dCore">-</b></div>
+        <div class="card stat"><span>CPU / 内存 / 磁盘</span><b id="dSys">-</b></div>
+        <div class="card stat"><span>系统负载</span><b id="dLoad">-</b></div>
+        <div class="card stat"><span>总流量（上行 / 下行）</span><b id="dTraffic">-</b></div>
+        <div class="card stat"><span>流量口径</span><b id="dSource">-</b></div>
+        <div class="card stat"><span>入站 / 客户端</span><b id="dCounts">-</b></div>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:8px">
+        <button onclick="coreAction('apply')">应用配置并重启核心</button>
+        <button class="secondary" onclick="coreAction('start')">启动核心</button>
+        <button class="secondary" onclick="coreAction('stop')">停止核心</button>
+        <button class="secondary" onclick="coreAction('restart')">重启核心</button>
+      </div>
+      <div id="dashErr" class="err"></div>
+    </div>
+
+    <div id="tab-inbounds" class="hidden">
+      <button onclick="openInboundForm()">+ 添加入站</button>
+      <div id="inboundList" style="margin-top:16px"></div>
+    </div>
+
+    <div id="tab-settings" class="hidden">
+      <div class="card">
+        <h3 style="margin-top:0">面板与内核设置</h3>
+        <label>订阅域名（链接与订阅里的服务器地址，空则用访问 Host）</label><input id="setSubDomain">
+        <label>sing-box 二进制路径（空则自动查找 PATH 或数据目录 bin/sing-box）</label><input id="setBinPath">
+        <div class="row">
+          <div><label>clash API 端口</label><input id="setClashPort" type="number"></div>
+          <div><label>v2ray API 端口</label><input id="setV2RayPort" type="number"></div>
+        </div>
+        <div class="row">
+          <div><label>启用 v2ray API</label>
+            <select id="setV2Ray"><option value="true">启用</option><option value="false">禁用</option></select></div>
+          <div><label>流量统计来源</label>
+            <select id="setStatsSource"><option value="auto">自动（v2ray 优先，失败退 clash）</option><option value="v2ray">仅 v2ray</option><option value="clash">仅 clash</option></select></div>
+        </div>
+        <p class="note">面板监听端口修改需重启面板进程生效（启动参数 -port），设置页不提供在线改端口。</p>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button onclick="saveSettings()">保存设置</button>
+          <button class="secondary" onclick="openChangePass()">修改登录密码</button>
+        </div>
+        <div style="margin-top:14px">
+          <label>sing-box 版本（留空下载最新版）</label>
+          <div style="display:flex;gap:8px"><input id="dlVersion" placeholder="如 1.12.0"><button class="secondary" onclick="downloadCore()">从 GitHub 下载核心</button></div>
+          <div id="setErr" class="err"></div>
+          <div id="coreInfo" class="note" style="margin-top:8px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-logs" class="hidden">
+      <button class="secondary" onclick="loadLogs()">刷新日志</button>
+      <div id="logBox" class="logbox" style="margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
+<div id="modalWrap" class="hidden"></div>
+<script src="/app.js"></script>
+</body>
+</html>
