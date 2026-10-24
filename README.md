@@ -2,6 +2,23 @@
 
 一个类似 x-ui 的轻量代理面板：Go 单二进制，前端原生 HTML/CSS/JS（无构建步骤，`go:embed` 内嵌），内核为外部 sing-box 进程。面板负责生成 sing-box 配置、管理核心启停、查看日志、统计流量。
 
+## 一键安装
+
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/Skycnhe/singbox-panel/Hk001/install.sh)
+```
+
+需 root 运行。脚本会：检查/安装 Go（已有 Go >= 1.25 直接复用，否则下载官方 Go 1.25.1）→ 拉取 Hk001 分支源码并编译 → 安装二进制到 `/usr/local/bin/singbox-panel`、数据目录 `/usr/local/singbox-panel/data` → 注册 systemd 服务并开机自启。装完打开 `http://<服务器 IP>:54321/`，默认账号 `admin / admin`（首次登录强制改密），然后在设置页下载 sing-box 内核即可使用。重复执行该命令即为升级（面板数据与 sing-box 配置保留）。
+
+### 卸载
+
+```bash
+systemctl disable --now singbox-panel
+rm -f /usr/local/bin/singbox-panel /etc/systemd/system/singbox-panel.service
+rm -rf /usr/local/singbox-panel
+systemctl daemon-reload
+```
+
 ## 功能清单
 
 - **登录鉴权**：用户名/密码（bcrypt 存哈希），session cookie；默认账号 `admin/admin`，首次登录强制改密（改密前其他 API 一律 403）
